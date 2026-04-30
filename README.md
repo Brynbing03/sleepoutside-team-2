@@ -1,3 +1,9 @@
+# Netlify Link
+
+https://wdd360team2sleepoutside.netlify.app
+npm run build to push to netlify
+npm run start is on local
+
 # Sleepoutside - Fronend starter code
 
 ## Description
