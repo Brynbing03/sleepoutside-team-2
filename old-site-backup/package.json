@@ -1,20 +1,16 @@
 {
-  "name": "sleepastro",
+  "name": "outside",
+  "version": "1.0.0",
+  "description": "Boilerplate for WDD 360 SleepOutside project",
+  "main": "main.js",
   "type": "module",
-  "version": "0.0.1",
-  "engines": {
-    "node": ">=22.12.0"
-  },
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro",
-    "lint": "eslint *.js src/**/*.ts",
-    "format": "prettier --ignore-path ./.gitignore --write \"./**/*.{html,json,js,ts,css}\""
-  },
-  "dependencies": {
-    "astro": "^6.3.0"
+    "start": "vite",
+    "build": "tsc && vite build --emptyOutDir",
+    "preview": "vite preview",
+    "lint": "eslint *.js src/**/*.js",
+    "format": "prettier --ignore-path ./.gitignore --write \"./**/*.{html,json,js,ts,css}\"",
+    "test": "vitest"
   },
   "author": "Shane Thompson",
   "license": "ISC",
