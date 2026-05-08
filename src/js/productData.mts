@@ -9,7 +9,8 @@ function convertToJson(res:Response) {
 }
 
 export function getData(category = "tents") {
-  return fetch(`../json/${category}.json`)
+  // had to change the file path cause the old one was looking in the wrong place for the json file
+  return fetch(`/json/${category}.json`)
     .then(convertToJson)
     .then((data) => data);
 }
