@@ -1,8 +1,22 @@
 import { getLocalStorage } from "./utils.mjs";
 import type { Product } from "./types.mts";
 
+function getCartItems(): Product[] {
+  const data = getLocalStorage("so-cart") || [];
+
+  if (!data) {
+    return [];
+  }
+
+  if (!Array.isArray(data)) {
+    return [data];
+  }
+
+  return data;
+}
+
 function renderCartContents() {
-  const cartItems = getLocalStorage("so-cart");
+  const cartItems = getCartItems();
   const htmlItems = cartItems.map((item: Product) => cartItemTemplate(item));
   const listEl = document.querySelector(".product-list");
   if (listEl) listEl.innerHTML = htmlItems.join("");
