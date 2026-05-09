@@ -7,13 +7,30 @@ export function qs(selector:string, parent = document) {
 
 // retrieve data from localstorage
 export function getLocalStorage(key:string) {
-  const data = localStorage.getItem(key) || ""
-  return JSON.parse(data);
+  const data = localStorage.getItem(key)
+  if (data) {
+    return JSON.parse(data);
+  } else { 
+    return [] ;
+  } 
+  // Remember ? ... : ... ; is like saying if this then this, if not then this (Condition ? True : False;).
+    // const dataList = JSON.parse(localStorage.getItem(key)) || [];
 }
+
 // save data to local storage
 export function setLocalStorage(key:string, data:any) {
-  localStorage.setItem(key, JSON.stringify(data));
+  const storedData = getLocalStorage(key);
+  // if (Array.isArray(storedData)) {
+  // return storedData
+  // } else {
+  // return [];
+  // }
+  const convertArray = Array.isArray(storedData) ? storedData : [];
+  convertArray.push(data);
+  // It still sees it as objects/string instead of array so add the condition and make sure is being converted to an array
+  localStorage.setItem(key, JSON.stringify(convertArray));
 }
+
 // set a listener for both touchend and click
 interface ClickHandler {
   (e:Event):void;
