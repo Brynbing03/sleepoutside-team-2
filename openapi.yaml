@@ -1,0 +1,393 @@
+openapi: 3.0.3
+info:
+  title: SleepOutside API
+  version: 1.0.0
+  description: API documentation for products and alerts in the SleepOutside retail application.
+
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+
+tags:
+  - name: Products
+  - name: Alerts
+
+paths:
+  /products:
+    get:
+      tags:
+        - Products
+      summary: Get all products
+      description: Get products with optional searching, filtering, pagination, and field selection.
+      parameters:
+        - name: q
+          in: query
+          schema:
+            type: string
+          description: Search string for product name or description.
+        - name: category
+          in: query
+          schema:
+            type: string
+            enum: [tents, backpacks, sleeping-bags, hammocks]
+          description: Filter products by category.
+        - name: fields
+          in: query
+          schema:
+            type: string
+          description: Comma-separated list of fields to return.
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            example: 20
+          description: Number of products to return.
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            example: 0
+          description: Number of products to skip.
+      responses:
+        "200":
+          description: Products returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedProducts"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /products/{id}:
+    get:
+      tags:
+        - Products
+      summary: Get one product
+      description: Get a single product by ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Product ID.
+      responses:
+        "200":
+          description: Product returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /alerts:
+    get:
+      tags:
+        - Alerts
+      summary: Get all alerts
+      description: Get all alerts.
+      responses:
+        "200":
+          description: Alerts returned successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Alert"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+    post:
+      tags:
+        - Alerts
+      summary: Create an alert
+      description: Create a new alert. This endpoint should be protected.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AlertInput"
+      responses:
+        "201":
+          description: Alert created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Alert"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /alerts/{id}:
+    get:
+      tags:
+        - Alerts
+      summary: Get one alert
+      description: Get a single alert by ID.
+      parameters:
+        - $ref: "#/components/parameters/AlertId"
+      responses:
+        "200":
+          description: Alert returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Alert"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+    put:
+      tags:
+        - Alerts
+      summary: Update an alert
+      description: Update an existing alert. This endpoint should be protected.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/AlertId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AlertInput"
+      responses:
+        "200":
+          description: Alert updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Alert"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+    delete:
+      tags:
+        - Alerts
+      summary: Delete an alert
+      description: Delete an alert by ID. This endpoint should be protected.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/AlertId"
+      responses:
+        "204":
+          description: Alert deleted successfully.
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    AlertId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Alert ID.
+
+  responses:
+    BadRequest:
+      description: Bad request.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    Unauthorized:
+      description: Unauthorized. Login is required.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    Forbidden:
+      description: Forbidden. The user does not have permission.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    NotFound:
+      description: Resource not found.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    ServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+  schemas:
+    PaginatedProducts:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 50
+        next:
+          type: string
+          nullable: true
+          example: /products?limit=20&offset=20
+        previous:
+          type: string
+          nullable: true
+          example: null
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/Product"
+
+    Product:
+      type: object
+      properties:
+        _id:
+          type: string
+        id:
+          type: string
+        isClearance:
+          type: boolean
+        category:
+          type: string
+          enum: [tents, backpacks, sleeping-bags, hammocks]
+        isNew:
+          type: boolean
+        url:
+          type: string
+        name:
+          type: string
+        nameWithoutBrand:
+          type: string
+        descriptionHtmlSimple:
+          type: string
+        suggestedRetailPrice:
+          type: number
+        listPrice:
+          type: number
+        finalPrice:
+          type: number
+        reviews:
+          type: object
+          properties:
+            reviewsUrl:
+              type: string
+            reviewCount:
+              type: number
+            averageRating:
+              type: number
+        images:
+          type: object
+          properties:
+            primarySmall:
+              type: string
+            primaryMedium:
+              type: string
+            primaryLarge:
+              type: string
+            primaryExtraLarge:
+              type: string
+        brand:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+            url:
+              type: string
+
+    Alert:
+      type: object
+      properties:
+        id:
+          type: string
+          example: alert-123
+        title:
+          type: string
+          example: Clearance Sale
+        message:
+          type: string
+          example: Save 20% on select tents this week.
+        type:
+          type: string
+          example: sale
+        active:
+          type: boolean
+          example: true
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+
+    AlertInput:
+      type: object
+      required:
+        - title
+        - message
+        - active
+      properties:
+        title:
+          type: string
+        message:
+          type: string
+        type:
+          type: string
+        active:
+          type: boolean
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Something went wrong.
