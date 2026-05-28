@@ -1,0 +1,12 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import ProductList from "../../components/ProductList.svelte";
+
+const title = "Products";
+---
+
+<Layout title={title}>
+  <section class="products">
+    <ProductList client:load />
+  </section>
+</Layout>

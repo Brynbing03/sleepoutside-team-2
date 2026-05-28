@@ -1,6 +1,7 @@
 ---
-import Welcome from "../components/Welcome.astro";
+// import Welcome from "../components/Welcome.astro";
 import '../css/style.css';
+import UserMenu from "../components/UserMenu.svelte";
 
 let {title} = Astro.props;
 ---
@@ -20,7 +21,8 @@ let {title} = Astro.props;
       </div>
       <nav class="menu-right">
         <div class="user-menu-container">
-          <div class="user">
+          <UserMenu client:load />
+          <!-- <div class="user">
             <button
               class="user__button"
               aria-label="user management"
@@ -33,7 +35,7 @@ let {title} = Astro.props;
               <a href="#">Profile</a>
               <a href="#">Orders</a>
             </nav>
-          </div>
+          </div> -->
         </div>
         <div class="cart">
           <a
