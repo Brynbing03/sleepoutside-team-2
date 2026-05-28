@@ -1,4 +1,5 @@
 import type {Product} from "./types.mts"
+const baseURL = process.env.PUBLIC_SERVER_URL;
 
 function convertToJson(res:Response) {
   if (res.ok) {
@@ -15,6 +16,8 @@ export function getData(category = "tents") {
 }
 
 export async function findProductById(id:string) {
-  const products = await getData();
-  return products.find((item:Product) => item.id === id);
+    const response = await fetch(baseURL + `products/${id}`);
+    const product = await convertToJson(response) as Product;
+    console.log(product)
+    return product;
 }
