@@ -1,8 +1,6 @@
 import type {Product} from "./types.mts"
 const baseURL = process.env.PUBLIC_SERVER_URL;
 
-const baseURL = import.meta.env.PUBLIC_SERVER_URL || "http://localhost:3000/api/v1/";
-
 function convertToJson(res:Response) {
   if (res.ok) {
     return res.json();
