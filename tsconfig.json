@@ -6,6 +6,5 @@
     "types": ["node", "astro/client"],
     "jsx": "preserve",
     "jsxImportSource": "svelte",
-    "types": ["node", "astro/client"]
   }
 }
