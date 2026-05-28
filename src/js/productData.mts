@@ -15,7 +15,7 @@ function convertToJson(res:Response) {
 //     .then((data) => data);
 // }
 
-export function getData(category = "tents") {
+export function getProducts(category = "tents") {
   return fetch(baseURL + `products?category=${category}`)
     .then(convertToJson)
     .then((data) => data);
