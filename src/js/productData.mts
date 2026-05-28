@@ -1,6 +1,8 @@
 import type {Product} from "./types.mts"
 const baseURL = process.env.PUBLIC_SERVER_URL;
 
+const baseURL = import.meta.env.PUBLIC_SERVER_URL || "http://localhost:3000/api/v1/";
+
 function convertToJson(res:Response) {
   if (res.ok) {
     return res.json();
@@ -9,8 +11,14 @@ function convertToJson(res:Response) {
   }
 }
 
+// export function getData(category = "tents") {
+//   return fetch(`../json/${category}.json`)
+//     .then(convertToJson)
+//     .then((data) => data);
+// }
+
 export function getData(category = "tents") {
-  return fetch(`/json/${category}.json`)
+  return fetch(baseURL + `products?category=${category}`)
     .then(convertToJson)
     .then((data) => data);
 }
@@ -21,3 +29,4 @@ export async function findProductById(id:string) {
     console.log(product)
     return product;
 }
+
