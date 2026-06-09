@@ -17,12 +17,15 @@
     "astro": "^6.3.0",
     "node": "^26.3.0",
     "@astrojs/svelte": "^8.1.2",
-    "svelte": "^5.55.10"
+    "astro": "^6.3.0",
+    "svelte": "^5.55.10",
+    "node": "^26.3.0"
   },
   "author": "Shane Thompson",
   "license": "ISC",
   "devDependencies": {
     "@eslint/js": "^9.25.1",
+    "@types/node": "^22.19.20",
     "@types/node": "^22.19.20",
     "eslint": "^9.25.1",
     "eslint-config-prettier": "^10.1.1",
