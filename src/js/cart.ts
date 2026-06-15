@@ -24,10 +24,10 @@ function renderCartContents() {
 
 function cartItemTemplate(item: Product) {
   const newItem = `<li class="cart-card divider">
-  <a href="#" class="cart-card__image">
+  <a href="#" class="cart-card__image"> 
     <img
       src="${item.images}"
-      alt="${item.name}"
+      alt="${item.name}" 
     />
   </a>
   <a href="#">
