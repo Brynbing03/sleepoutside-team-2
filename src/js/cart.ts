@@ -15,19 +15,44 @@ function getCartItems(): Product[] {
   return data;
 }
 
+// udated and added things right here for the total in cart trello board -bb
 function renderCartContents() {
   const cartItems = getCartItems();
   const htmlItems = cartItems.map((item: Product) => cartItemTemplate(item));
   const listEl = document.querySelector(".product-list");
+
   if (listEl) listEl.innerHTML = htmlItems.join("");
+
+  renderCartTotal(cartItems);
 }
+
+function renderCartTotal(cartItems: Product[]) {
+  const cartFooter = document.querySelector(".cart-footer");
+  const cartTotal = document.querySelector("#cart-total");
+
+  if (!cartFooter || !cartTotal) return;
+
+  if (cartItems.length === 0) {
+    cartFooter.classList.add("hide");
+    cartTotal.textContent = "";
+    return;
+  }
+
+  const total = cartItems.reduce((sum, item) => {
+    return sum + item.finalPrice;
+  }, 0);
+
+  cartFooter.classList.remove("hide");
+  cartTotal.textContent = `$${total.toFixed(2)}`;
+}
+
 
 function cartItemTemplate(item: Product) {
   const newItem = `<li class="cart-card divider">
-  <a href="#" class="cart-card__image">
+  <a href="#" class="cart-card__image"> 
     <img
       src="${item.images}"
-      alt="${item.name}"
+      alt="${item.name}" 
     />
   </a>
   <a href="#">
