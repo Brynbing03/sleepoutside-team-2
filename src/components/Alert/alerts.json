@@ -1,0 +1,12 @@
+[
+    { 
+        "message": "This is a successful alert test that will fade in 30 seconds!", 
+        "type": "success",
+        "dismissible": false 
+    },
+    { 
+        "message": "This is a critical error alert! You must click X to dismiss it.", 
+        "type": "error",
+        "dismissible": true 
+    }
+]
