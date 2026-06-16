@@ -227,6 +227,27 @@ button {
 .cart:hover svg {
   fill: gray;
 }
+
+.cart-card {
+  position: relative;
+}
+
+.cart-card__remove {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background-color: transparent;
+  color: var(--dark-grey);
+  border: none;
+  padding: 0.25rem 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.cart-card__remove:hover {
+  color: red;
+  text-decoration: none;
+}
 /* End cart icon styles */
 
 .mission {
