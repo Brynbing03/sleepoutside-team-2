@@ -2,6 +2,7 @@
 // import Welcome from "../components/Welcome.astro";
 import '../css/style.css';
 import UserMenu from "../components/UserMenu.svelte";
+import ProductSearch from '../components/ProductSearch.svelte';
 
 let {title} = Astro.props;
 ---
@@ -20,6 +21,7 @@ let {title} = Astro.props;
         <a href="/"> Sleep<span class="highlight">Outside</span></a>
       </div>
       <nav class="menu-right">
+
         <div class="user-menu-container">
           <UserMenu client:load />
           <!-- <div class="user">
