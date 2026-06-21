@@ -1,22 +1,10 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-const title = "Cart";
+import ShoppingCart from "../../components/ShoppingCart.svelte";
+
+const title = "Shopping Cart";
 ---
 
 <Layout title={title}>
-  <main class="divider">
-    <section class="products">
-      <h2>My Cart</h2>
-
-      <ul class="product-list">
-        <!--the cart items will be put here when they are added :) -->
-      </ul>
-      
-      <div class="cart-footer hide">
-        <p class="cart-total">Total: <span id="cart-total"></span></p>
-      </div>
-      
-    </section>
-  </main>
-  <script src="../../js/cart.ts"></script>
+  <ShoppingCart client:load />
 </Layout>
