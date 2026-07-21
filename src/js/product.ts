@@ -3,19 +3,37 @@ import { setLocalStorage, getLocalStorage } from "./utils.mts";
 import { findProductById } from "./productData.mts";
 
 function addProductToCart(product: Product) {
-  const currentCart = getLocalStorage("so-cart") || [];
+  const storedCart = getLocalStorage("so-cart");
 
-  const updatedCart = Array.isArray(currentCart)
-    ? [...currentCart, product]
-    : [product];
+  const currentCart: Product[] = Array.isArray(storedCart)
+    ? storedCart
+    : storedCart
+      ? [storedCart]
+      : [];
 
-  setLocalStorage("so-cart", updatedCart);
+  const existingItemIndex = currentCart.findIndex(
+    (item) => item.id === product.id
+  );
 
-  // Tell the header that the cart contents changed.
+  if (existingItemIndex !== -1) {
+    const existingItem = currentCart[existingItemIndex];
+
+    currentCart[existingItemIndex] = {
+      ...existingItem,
+      quantity: (existingItem.quantity ?? 1) + 1
+    };
+  } else {
+    currentCart.push({
+      ...product,
+      quantity: 1
+    });
+  }
+
+  setLocalStorage("so-cart", currentCart);
+
   document.dispatchEvent(new CustomEvent("cartUpdated"));
 }
 
-// Add to cart button event handler
 async function addToCartHandler(event: Event) {
   const target = event.currentTarget as HTMLButtonElement;
   const productId = target.dataset.id;
@@ -32,7 +50,6 @@ async function addToCartHandler(event: Event) {
     if (cartIcon) {
       cartIcon.classList.remove("animate");
 
-      // Force the browser to restart the animation.
       void (cartIcon as HTMLElement).offsetWidth;
 
       cartIcon.classList.add("animate");
@@ -46,7 +63,6 @@ async function addToCartHandler(event: Event) {
   }
 }
 
-// Add listener to the Add to Cart button.
 document
   .getElementById("addToCart")
   ?.addEventListener("click", addToCartHandler);

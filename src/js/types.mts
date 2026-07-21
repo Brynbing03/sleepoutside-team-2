@@ -5,13 +5,18 @@ export interface Product {
   category: string;
   isNew: boolean;
   url: string;
+
+  quantity?: number;
+
   reviews: {
     reviewsUrl: string;
     reviewCount: number;
     averageRating: number;
   };
+
   nameWithoutBrand: string;
   name: string;
+
   images: {
     primarySmall: string;
     primaryMedium: string;
@@ -22,9 +27,11 @@ export interface Product {
       src: string;
     }[];
   };
+
   sizesAvailable: {
     zipper: string[];
   };
+
   colors: Color[];
   descriptionHtmlSimple: string;
   suggestedRetailPrice: number;
