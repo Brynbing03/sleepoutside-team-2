@@ -10,7 +10,10 @@
   
     let total = $derived(
       cartItems.reduce(
-        (sum, item) => sum + Number(item.finalPrice || 0),
+        (sum, item) =>
+          sum +
+          Number(item.finalPrice || 0) *
+            (item.quantity ?? 1),
         0
       )
     );
@@ -20,31 +23,97 @@
     });
   
     function getCartItems(): Product[] {
-      const data = getLocalStorage("so-cart");
+      const storedData = getLocalStorage("so-cart");
   
-      if (!data) {
+      if (!storedData) {
         return [];
       }
   
-      if (Array.isArray(data)) {
-        return data.filter((item) => item && item.id);
+      const storedItems = Array.isArray(storedData)
+        ? storedData
+        : [storedData];
+  
+      const combinedItems = new Map<string, Product>();
+  
+      for (const rawItem of storedItems) {
+        if (!rawItem || typeof rawItem !== "object") {
+          continue;
+        }
+  
+        // Support current and older product ID formats.
+        const productId =
+          rawItem.id ??
+          rawItem._id ??
+          rawItem.Id;
+  
+        if (!productId) {
+          console.warn(
+            "Cart item was missing a product ID:",
+            rawItem
+          );
+          continue;
+        }
+  
+        const normalizedItem = {
+          ...rawItem,
+          id: String(productId),
+          quantity: Number(rawItem.quantity ?? 1)
+        } as Product;
+  
+        const existingItem = combinedItems.get(
+          normalizedItem.id
+        );
+  
+        if (existingItem) {
+          existingItem.quantity =
+            (existingItem.quantity ?? 1) +
+            (normalizedItem.quantity ?? 1);
+        } else {
+          combinedItems.set(
+            normalizedItem.id,
+            normalizedItem
+          );
+        }
       }
   
-      if (data && data.id) {
-        return [data];
-      }
+      const cleanedCart = Array.from(
+        combinedItems.values()
+      );
   
-      return [];
+      // Save the migrated cart so old duplicate entries
+      // become one entry with a quantity.
+      setLocalStorage("so-cart", cleanedCart);
+  
+      document.dispatchEvent(
+        new CustomEvent("cartUpdated")
+      );
+  
+      return cleanedCart;
     }
   
     function getColorName(item: Product): string {
-      const colors = item.colors as any;
-  
-      if (Array.isArray(colors)) {
-        return colors[0]?.colorName || "Color not listed";
+      if (Array.isArray(item.colors)) {
+        return (
+          item.colors[0]?.colorName ||
+          "Color not listed"
+        );
       }
   
-      return colors?.colorName || "Color not listed";
+      return "Color not listed";
+    }
+  
+    function getImageUrl(item: Product): string {
+      const imageUrl =
+        item.images?.primaryMedium ||
+        item.images?.primaryLarge ||
+        item.images?.primarySmall ||
+        "";
+  
+      if (imageUrl.startsWith("//")) {
+        return `https:${imageUrl}`;
+      }
+  
+      return imageUrl;
     }
   
     function removeCartItem(productId: string) {
@@ -66,7 +135,7 @@
   
       {#if cartItems.length > 0}
         <ul class="product-list">
-          {#each cartItems as item, index (`${item.id}-${index}`)}
+          {#each cartItems as item (item.id)}
             <li class="cart-card divider">
               <button
                 type="button"
@@ -82,7 +151,7 @@
                 class="cart-card__image"
               >
                 <img
-                  src={item.images?.primaryMedium}
+                  src={getImageUrl(item)}
                   alt={item.name}
                 />
               </a>
@@ -98,11 +167,12 @@
               </p>
   
               <p class="cart-card__quantity">
-                qty: 1
+                qty: {item.quantity ?? 1}
               </p>
   
               <p class="cart-card__price">
-                ${Number(item.finalPrice).toFixed(2)}
+                ${(Number(item.finalPrice) *
+                  (item.quantity ?? 1)).toFixed(2)}
               </p>
             </li>
           {/each}
