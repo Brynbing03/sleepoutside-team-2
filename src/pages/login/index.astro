@@ -1,9 +1,10 @@
 ---
 import Login from "../../components/Login.svelte";
+import Layout from "../../layouts/Layout.astro"
 ---
 
-<div class="login">
-    <Login />
-</div>
-
-
+<Layout> 
+    <div class="login">
+        <Login client:load/>
+    </div>
+</Layout>
