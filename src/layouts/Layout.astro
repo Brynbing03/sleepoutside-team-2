@@ -66,11 +66,51 @@ let {title} = Astro.props;
               <!-- <text x="0" y="115" fill="#000000" font-size="5px" font-weight="bold" font-family="'Helvetica Neue', Helvetica, Arial-Unicode, Arial, Sans-serif">Created by Natalia Woodroffe</text>
             <text x="0" y="120" fill="#000000" font-size="5px" font-weight="bold" font-family="'Helvetica Neue', Helvetica, Arial-Unicode, Arial, Sans-serif">from the Noun Project</text> -->
             </svg>
+
+            <span id="cart-count" class="cart-count hide">0</span>
+          
           </a>
         </div>
       </nav>
     </header>
 	<slot />
     <footer>&copy;NOT a real business</footer>
+    <script is:inline>
+      function updateCartCount() {
+        const cartCountElement = document.querySelector("#cart-count");
+
+        if (!cartCountElement) return;
+
+        try {
+          const storedCart = localStorage.getItem("so-cart");
+          const cartItems = storedCart ? JSON.parse(storedCart) : [];
+
+          const count = Array.isArray(cartItems)
+            ? cartItems.length
+            : cartItems
+              ? 1
+              : 0;
+
+          cartCountElement.textContent = String(count);
+          cartCountElement.classList.toggle("hide", count === 0);
+        } catch (error) {
+          console.error("Could not update cart count:", error);
+          cartCountElement.textContent = "0";
+          cartCountElement.classList.add("hide");
+        }
+      }
+
+      updateCartCount();
+
+      document.addEventListener("cartUpdated", updateCartCount);
+
+      window.addEventListener("storage", (event) => {
+        if (event.key === "so-cart") {
+          updateCartCount();
+        }
+      });
+
+      document.addEventListener("astro:page-load", updateCartCount);
+    </script>
   </body>
 </html>
