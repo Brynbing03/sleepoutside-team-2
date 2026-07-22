@@ -62,13 +62,13 @@
 {/if}
 
 <ul class="product-list">
-  {#each sortedProducts as product}
-    <ProductSummary {product} />
-  {:else}
-    {#if $searchState.query}
-      <p class="no-results">No items found matching "{$searchState.query}"</p>
-    {/if}
-  {/each}
+  {#if sortedProducts.length > 0}
+    {#each sortedProducts as product}
+      <ProductSummary {product} />
+    {/each}
+  {:else if $searchState.query}
+    <p class="no-results">No items found matching "{$searchState.query}"</p>
+  {/if}
 </ul>
 
 <style>

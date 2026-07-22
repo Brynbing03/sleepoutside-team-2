@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { error } from "console";
   import type { Product } from "../js/types.mts";
   import { searchState } from "./searchStore.ts";
   // import ProductSummary from "./ProductSummary.svelte";
@@ -43,7 +44,7 @@
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/v1/products?q=${encodeURIComponent(trimmedQuery)}`,
+        `http://localhost:4321/api/v1/products?q=${encodeURIComponent(trimmedQuery)}`,
       );
       if (!response.ok) {
         const errorData = await response.json();
@@ -52,16 +53,36 @@
 
       const data = await response.json();
 
+      if (!data.results || data.results.length === 0) {
+        searchState.set({
+          results: [],
+          query: trimmedQuery,
+        });
+        errorMessage = "No products found.";
+        return;
+      }
+
+      searchState.set({
+        results: data.results,
+        query: trimmedQuery,
+      });
+
       searchState.set({
         results: data.results || [],
         query: trimmedQuery,
       });
+
+      // window.location.href = "/product-list";
 
       searchQuery = "";
 
       if (inputElement) {
         inputElement.blur();
       }
+
+      errorMessage = "No products found.";
+      return;
+      
     } catch (err: any) {
       errorMessage = err.message;
       console.error("Search error:", err);
@@ -100,7 +121,7 @@
     margin-right: 10px;
 
     label {
-        font-size: 15px;
+      font-size: 15px;
     }
   }
 

@@ -1,25 +1,22 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import {
-  type CollectionEntry,
-  getCollection
-} from "astro:content";
+import { type CollectionEntry, getCollection } from "astro:content";
 
 export async function getStaticPaths() {
   const products = await getCollection("products");
 
   console.log(
     "Generated product routes:",
-    products.map((product) => product.id)
+    products.map((product) => product.id),
   );
 
   return products.map((product) => ({
     params: {
-      id: product.id
+      id: product.id,
     },
     props: {
-      product
-    }
+      product,
+    },
   }));
 }
 
@@ -65,12 +62,15 @@ const title = product.data.name;
       </p>
 
       <div class="product-detail__add">
-        <button
-          id="addToCart"
-          data-id={product.id}
-        >
-          Add to Cart
-        </button>
+        {
+          product ? (
+            <button id="addToCart" data-id={product.id}>
+              Add to Cart
+            </button>
+          ) : (
+            <p>This product is not available</p>
+          )
+        }
       </div>
     </section>
   </main>
