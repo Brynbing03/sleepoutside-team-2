@@ -3,19 +3,45 @@ import { setLocalStorage, getLocalStorage } from "./utils.mts";
 import { findProductById } from "./productData.mts";
 
 function addProductToCart(product: Product) {
-  const currentCart = getLocalStorage("so-cart") || [];
-  const updatedCart = Array.isArray(currentCart)
-    ? [...currentCart, product]
-    : [product];
-  setLocalStorage("so-cart", updatedCart);
+  const storedCart = getLocalStorage("so-cart");
+
+  const currentCart: Product[] = Array.isArray(storedCart)
+    ? storedCart
+    : storedCart
+      ? [storedCart]
+      : [];
+
+  const existingItemIndex = currentCart.findIndex(
+    (item) => item.id === product.id
+  );
+
+  if (existingItemIndex !== -1) {
+    const existingItem = currentCart[existingItemIndex];
+
+    currentCart[existingItemIndex] = {
+      ...existingItem,
+      quantity: (existingItem.quantity ?? 1) + 1
+    };
+  } else {
+    currentCart.push({
+      ...product,
+      quantity: 1
+    });
+  }
+
+  setLocalStorage("so-cart", currentCart);
+
+  document.dispatchEvent(new CustomEvent("cartUpdated"));
 }
 
-// add to cart button event handler
-async function addToCartHandler(e: Event) {
-  const target = e.target as HTMLButtonElement;
+async function addToCartHandler(event: Event) {
+  const target = event.currentTarget as HTMLButtonElement;
+  const productId = target.dataset.id;
 
-  if (target.dataset.id) {
-    const product = await findProductById(target.dataset.id);
+  if (!productId) return;
+
+  try {
+    const product = await findProductById(productId);
 
     addProductToCart(product);
 
@@ -24,7 +50,6 @@ async function addToCartHandler(e: Event) {
     if (cartIcon) {
       cartIcon.classList.remove("animate");
 
-      // forces browser to restart da animation
       void (cartIcon as HTMLElement).offsetWidth;
 
       cartIcon.classList.add("animate");
@@ -33,10 +58,11 @@ async function addToCartHandler(e: Event) {
         cartIcon.classList.remove("animate");
       }, 600);
     }
+  } catch (error) {
+    console.error("Unable to add product to cart:", error);
   }
 }
 
-// add listener to Add to Cart button
 document
   .getElementById("addToCart")
   ?.addEventListener("click", addToCartHandler);

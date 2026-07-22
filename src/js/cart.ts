@@ -57,6 +57,10 @@ function removeCartItem(productId: string) {
   }
 
   setLocalStorage("so-cart", cartItems);
+
+  // Tell the header that the cart contents changed.
+  document.dispatchEvent(new CustomEvent("cartUpdated"));
+
   renderCartContents();
 }
 
@@ -65,11 +69,8 @@ function addRemoveListeners() {
 
   removeButtons.forEach((button) => {
     button.addEventListener("click", (event) => {
-      const target = event.target as HTMLElement;
+      const target = event.currentTarget as HTMLButtonElement;
       const productId = target.dataset.id;
-
-      // console.log("X clicked!");
-      // console.log("Product ID:", productId);
 
       if (productId) {
         removeCartItem(productId);
