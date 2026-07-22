@@ -2,7 +2,7 @@
 // import Welcome from "../components/Welcome.astro";
 import Layout from "../layouts/Layout.astro";
 
-const title= "Home";
+const title = "Home";
 import Alert from "../components/Alert/index.astro";
 ---
 
@@ -29,29 +29,41 @@ import Alert from "../components/Alert/index.astro";
         comfortably at an affordable price.
       </p>
     </section>
-    <section class="products">
+    <section class="products products-cat">
       <ul class="product-list">
         <li>
           <a href="product-list/index.html?category=tents">
-            <img src="https://wdd360.netlify.app/images/category-icons/noun_Tent_3544767.svg" alt="" />
+            <img
+              src="https://wdd360.netlify.app/images/category-icons/noun_Tent_3544767.svg"
+              alt=""
+            />
             <span>Tents</span>
           </a>
         </li>
         <li>
           <a href="product-list/index.html?category=backpacks">
-            <img src="https://wdd360.netlify.app/images/category-icons/noun_carrier_bag_3544771.svg" alt="" />
+            <img
+              src="https://wdd360.netlify.app/images/category-icons/noun_carrier_bag_3544771.svg"
+              alt=""
+            />
             <span>Backpacks</span>
           </a>
         </li>
         <li>
           <a href="product-list/index.html?category=sleeping-bags">
-            <img src="https://wdd360.netlify.app/images/category-icons/noun_Sleeping_Bag_3544775.svg" alt="" />
+            <img
+              src="https://wdd360.netlify.app/images/category-icons/noun_Sleeping_Bag_3544775.svg"
+              alt=""
+            />
             <span>Sleeping Bags</span>
           </a>
         </li>
         <li>
           <a href="product-list/index.html?category=hammocks">
-            <img src="https://wdd360.netlify.app/images/category-icons/noun_Hammock_791143.svg" alt="" />
+            <img
+              src="https://wdd360.netlify.app/images/category-icons/noun_Hammock_791143.svg"
+              alt=""
+            />
             <span>Hammocks</span>
           </a>
         </li>
@@ -110,3 +122,62 @@ import Alert from "../components/Alert/index.astro";
   </main>
   <script src="../js/main.ts"></script>
 </Layout>
+
+<style>
+  .products-cat {
+    ul {
+      justify-content: space-evenly;
+    }
+
+    a {
+      display: flex;
+      flex-direction: column;
+    }
+
+    img {
+      width: 100px;
+    }
+  }
+
+  .product-card {
+    max-width: 250px;
+    height: auto;
+
+    img {
+      width: 200x;
+      justify-self: center;
+    }
+  }
+
+  @media (max-width: 899px) {
+    .product-card {
+      max-width: 220px;
+      font-size: smaller;
+
+      img {
+        width: 150px;
+        justify-self: center;
+      }
+    }
+
+    .products-cat img {
+      width: 70px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .product-card {
+      max-width: 150px;
+      font-size: small;
+
+      img {
+        width: 100px;
+        justify-self: center;
+      }
+    }
+
+    .products-cat img {
+      width: 50px;
+    }
+  }
+</style>

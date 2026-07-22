@@ -4,18 +4,16 @@
   import type { Product } from "../js/types.mts";
   import { getParam } from "../js/utils.mjs";
   import ProductSummary from "./ProductSummary.svelte";
-  import ProductSearch from "./ProductSearch.svelte";
+  import { searchState } from "./searchStore.ts";
 
-  let category = $state(""); 
+  let category = $state("");
   let products: Product[] = $state([]);
   let sortBy = $state("name");
 
-  // Search state
-  let activeSearchQuery = $state("");
-  let searchResults: Product[] = $state([]);
-
   let sortedProducts = $derived.by(() => {
-    const list = activeSearchQuery ? [...searchResults] : [...products];
+    // const list = activeSearchQuery ? [...searchResults] : [...products];
+
+    const list = $searchState.query ? [...$searchState.results] : [...products];
 
     if (sortBy === "price") {
       list.sort((a, b) => a.listPrice - b.listPrice);
@@ -26,15 +24,15 @@
     return list;
   });
 
-  function handleSearchResults(query: string, results: Product[]) {
-    activeSearchQuery = query;
-    searchResults = results;
-  }
+  // function handleSearchResults(query: string, results: Product[]) {
+  //   activeSearchQuery = query;
+  //   searchResults = results;
+  // }
 
-  function handleClearSearch() {
-    activeSearchQuery = "";
-    searchResults = [];
-  }
+  // function handleClearSearch() {
+  //   activeSearchQuery = "";
+  //   searchResults = [];
+  // }
 
   async function init() {
     category = getParam("category") || "";
@@ -45,10 +43,10 @@
   onMount(init);
 </script>
 
-<ProductSearch onSearch={handleSearchResults} onClear={handleClearSearch} />
+<!-- <ProductSearch onSearch={handleSearchResults} onClear={handleClearSearch} /> -->
 
-{#if activeSearchQuery}
-  <h2>Search results for "{activeSearchQuery}"</h2>
+{#if $searchState.query}
+  <h2>Search results for "{$searchState.query}"</h2>
 {:else}
   <h2>Top products: {category.charAt(0).toUpperCase() + category.slice(1)}</h2>
 {/if}
@@ -64,13 +62,13 @@
 {/if}
 
 <ul class="product-list">
-    {#each sortedProducts as product}
-      <ProductSummary {product} />
-    {:else}
-      {#if activeSearchQuery}
-        <p class="no-results">No items found matching "{activeSearchQuery}"</p>
-      {/if}
-    {/each}
+  {#each sortedProducts as product}
+    <ProductSummary {product} />
+  {:else}
+    {#if $searchState.query}
+      <p class="no-results">No items found matching "{$searchState.query}"</p>
+    {/if}
+  {/each}
 </ul>
 
 <style>
