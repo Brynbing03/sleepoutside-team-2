@@ -20,23 +20,22 @@
     event.preventDefault();
 
     try {
-      await login(email, password);
-      errorMessage = "";
+      const loginresult = await login(email, password);
+      // errorMessage = "";
       onSuccess("redirectPath");
     } catch (error: any) {
       console.log(error);
       errorMessage = error.message;
     }
-
-    onMount(() => {
-      const param = getParam("redirect");
-      if (param) {
-        redirectPath = param;
-      } else if (document.referrer != window.location.href) {
-        redirectPath = document.referrer;
-      }
-    });
   }
+  onMount(() => {
+    const param = getParam("redirect");
+    if (param) {
+      redirectPath = param;
+    } else if (document.referrer != window.location.href) {
+      redirectPath = document.referrer;
+    }
+  });
 </script>
 
 <h2>Login</h2>
