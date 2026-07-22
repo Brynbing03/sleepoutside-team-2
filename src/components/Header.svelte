@@ -1,7 +1,7 @@
 <script lang="ts">
+  import ProductSearch from "./ProductSearch.svelte";
   import UserMenu from "./UserMenu.svelte";
 </script>
-
 
 <header class="divider">
   <div class="logo">
@@ -9,6 +9,9 @@
     <a href="/"> Sleep<span class="highlight">Outside</span></a>
   </div>
   <nav class="menu-right">
+    <div class="search-section">
+      <ProductSearch />
+    </div>
     <div class="user-menu-container">
       <UserMenu />
     </div>
@@ -38,4 +41,3 @@
     </div>
   </nav>
 </header>
-
